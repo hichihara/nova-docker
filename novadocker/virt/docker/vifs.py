@@ -107,7 +107,7 @@ class DockerGenericVIFDriver(object):
         vlan = vif.get('vlan')
         if vlan is not None:
             iface = (CONF.vlan_interface or
-                     vif['network']['meta']['bridge_interface'])
+                     vif['network'].get_meta('bridge_interface'))
             linux_net.LinuxBridgeInterfaceDriver.ensure_vlan_bridge(
                 vlan,
                 bridge,
@@ -118,7 +118,7 @@ class DockerGenericVIFDriver(object):
         else:
 
             iface = (CONF.flat_interface or
-                     vif['network']['meta']['bridge_interface'])
+                     vif['network'].get_meta('bridge_interface'))
             LOG.debug('Ensuring bridge for %s - %s' % (iface, bridge))
             linux_net.LinuxBridgeInterfaceDriver.ensure_bridge(
                 bridge,
