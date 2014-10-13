@@ -49,7 +49,9 @@ if [[ $VIRT_DRIVER == "docker" ]]; then
     fi
 
     # Start the daemon - restart just in case the package ever auto-starts...
-    restart_service docker
+    # Workaround "restart_service docker" failed
+    sudo start-stop-daemon --stop --pidfile "/var/run/docker.pid"
+    sudo /usr/sbin/service docker start
 
     echo "Waiting for docker daemon to start..."
     DOCKER_GROUP=$(groups | cut -d' ' -f1)
