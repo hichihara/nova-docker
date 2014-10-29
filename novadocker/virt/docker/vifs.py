@@ -116,7 +116,6 @@ class DockerGenericVIFDriver(object):
                 mtu=vif.get('mtu'))
             iface = 'vlan%s' % vlan
         else:
-
             iface = (CONF.flat_interface or
                      vif['network'].get_meta('bridge_interface'))
             LOG.debug('Ensuring bridge for %s - %s' % (iface, bridge))
@@ -204,8 +203,9 @@ class DockerGenericVIFDriver(object):
                           run_as_root=True)
             utils.execute('ip', 'netns', 'exec', container_id, 'ifconfig',
                           if_remote_name, ip, run_as_root=True)
-            utils.execute('ip', 'netns', 'exec', container_id,
-                          'ip', 'route', 'replace', 'default', 'via',
-                          gateway, 'dev', if_remote_name, run_as_root=True)
+            if gateway is not None:
+                utils.execute('ip', 'netns', 'exec', container_id,
+                              'ip', 'route', 'replace', 'default', 'via',
+                              gateway, 'dev', if_remote_name, run_as_root=True)
         except Exception:
             LOG.exception("Failed to attach vif")
